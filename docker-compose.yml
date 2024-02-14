@@ -1,0 +1,30 @@
+version: '2'
+services:
+   tl-mariadb:
+     container_name: tl-mariadb
+     image: bitnami/mariadb:latest
+     volumes:
+       - ./testlink/mariadb_data:/bitnami/mariadb
+     environment:
+       - ALLOW_EMPTY_PASSWORD=yes
+       - MARIADB_USER=tl_testlink
+       - MARIADB_DATABASE=tl_testlink
+
+   tl-testlink:
+     container_name: tl-testlink
+     image: bitnami/testlink-archived:1.9.20-debian-10-r302
+     ports:
+       - 8088:8080
+     volumes:
+       - ./testlink/testlink_data:/bitnami/testlink
+     environment:
+       - ALLOW_EMPTY_PASSWORD=yes
+       - TESTLINK_DATABASE_HOST=tl-mariadb
+       - TESTLINK_DATABASE_PORT_NUMBER=3306
+       - TESTLINK_DATABASE_USER=tl_testlink
+       - TESTLINK_DATABASE_NAME=tl_testlink
+       - TESTLINK_USERNAME=admin
+       - TESTLINK_PASSWORD=admin
+       - TESTLINK_EMAIL=admin@toto.com
+     depends_on:
+       - tl-mariadb
